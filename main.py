@@ -1,12 +1,11 @@
-import tkinter
+import time
+from tkinter import *
+from tkinter import messagebox as mb
 from tkinter.ttk import Label
 
 import cv2
-import time
-from pyzbar import pyzbar
-from tkinter import *
-from tkinter import messagebox as mb
 import mysql.connector
+from pyzbar import pyzbar
 
 db = mysql.connector.connect(
     host='localhost',
@@ -17,7 +16,7 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 #mycursor.execute("CREATE TABLE User (name VARCHAR(25), age int UNSIGNED, person_id int PRIMARY KEY AUTO_INCREMENT) ")
-#
+
 mycursor.execute("INSERT INTO User (name, age) VALUES (%s, %s)", ("Cristiano", 26))
 # db.commit()
 
