@@ -13,17 +13,17 @@ db = mysql.connector.connect(
     password="",
     database="food_log"
 )
-
-mycursor = db.cursor()
-#mycursor.execute("CREATE TABLE User (name VARCHAR(25), age int UNSIGNED, person_id int PRIMARY KEY AUTO_INCREMENT) ")
-
-mycursor.execute("INSERT INTO User (name, age) VALUES (%s, %s)", ("Cristiano", 26))
-# db.commit()
-
-mycursor.execute("SELECT * FROM User")
-
-for x in mycursor:
-    print(x)
+#
+# mycursor = db.cursor()
+# #mycursor.execute("CREATE TABLE User (name VARCHAR(25), age int UNSIGNED, person_id int PRIMARY KEY AUTO_INCREMENT) ")
+#
+# mycursor.execute("INSERT INTO User (name, age) VALUES (%s, %s)", ("Cristiano", 26))
+# # db.commit()
+#
+# mycursor.execute("SELECT * FROM User")
+#
+# for x in mycursor:
+#     print(x)
 
 used_codes = []
 foods = {}
@@ -35,17 +35,20 @@ root.title("Sim's Food App")
 
 def initialize():
     global addFood
-    newFood = Label(root, text="Enter new food:", font=('bold', 10))
-    newFood.place(x=20, y=30)
+    newFood = Label(root, text="Enter new food:")
+    newFood.grid(row=0, column=0)
 
     e_newFood = Entry()
-    e_newFood.place(x=150, y=30)
+    e_newFood.grid(row=0, column=1, columnspan=3)
 
-    insert = Button(root, text="Scan barcode", font=('italic', 10), bg="white", command=lambda: start_camera(e_newFood.get()))
-    insert.place(x=400, y=35)
+    insert = Button(root, text="Scan barcode", command=lambda: start_camera(e_newFood.get(), addedLabel))
+    insert.grid(row=0, column=4)
 
-    printFoods = Button(root, text="Print your foods", font=('italic', 10), bg="white", command=print_list)
-    printFoods.place(x=20, y=180)
+    addedLabel = Label(root, text="")
+    addedLabel.grid(row=1, column=0)
+
+    printFoods = Button(root, text="Print your foods", command=print_list)
+    printFoods.grid(row=2, column=0)
 
     root.mainloop()
 
@@ -57,35 +60,34 @@ def print_list():
     newRoot.geometry("300x300")
     if len(used_codes) == 0:
         b = Label(newRoot, text="No foods")
-        b.place(x=100, y=30)
+        b.grid(row=0, column=0, columnspan=3)
     # for i in range(len(used_codes)):  # Rows
     #     b = Label(newRoot, text=used_codes[i])
     #     b.grid(row=i)
     for i in foods:
         j = 0
-        b= Label(newRoot, text=(i, foods[i]))
+        b = Label(newRoot, text=(i, foods[i]))
         b.grid(row=j)
         j = j + 1
 
-def start_camera(newFoodItem):
 
+def start_camera(new_food_item, addedLabel):
     global addFood
     global foods
-    setFood = Label(root, text="", font=('bold', 30))
-    setFood.place(x=300, y=70)
-    open_camera()
+
+    open_camera(addedLabel)
     if addFood:
-        if not newFoodItem or len(newFoodItem) == 0:
-            setFood['text'] = 'Enter a food item first'
+        if not new_food_item or len(new_food_item) == 0:
+            addedLabel['text'] = 'Enter a food item first'
             used_codes.pop()
             addFood = False
         else:
-            foods[newFoodItem] = used_codes[-1]
-            setFood['text'] = 'SUCCESSFULLY ADDED'
+            foods[new_food_item] = used_codes[-1]
+            addedLabel['text'] = 'SUCCESSFULLY ADDED'
             addFood = False
 
 
-def open_camera():
+def open_camera(addedLabel):
     global foods
     global addFood
     cap = cv2.VideoCapture(0)
@@ -96,11 +98,12 @@ def open_camera():
         cv2.imshow("Scan food - press 'q' to quit", frame)
         for code in pyzbar.decode(frame):
             if code.data.decode('utf-8') not in used_codes:
-                used_codes.append({code.data.decode('utf-8'): 1})
-                addFood = True
-                cap.release()
-                cv2.destroyAllWindows()
-                mb.showinfo("Message", "Successfully added new food")
+                if addedLabel.get():
+                    used_codes.append({code.data.decode('utf-8'): 1})
+                    addFood = True
+                    cap.release()
+                    cv2.destroyAllWindows()
+                    mb.showinfo("Message", "Successfully added new food")
             elif code.data.decode('utf-8') in used_codes:
                 used_codes.append({code.data.decode('utf-8'): 0})
 
