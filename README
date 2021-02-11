@@ -3,6 +3,4 @@
 To run:
 python3 -m flask run
 
-February 5:
--Make it into a rest API 
--Change Buttons into navbar up top  - use a bootstrap?
+Integrate opencv from old-tkinter.py into the add food portion of the code
