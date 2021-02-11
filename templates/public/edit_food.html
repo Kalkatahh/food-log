@@ -1,0 +1,125 @@
+{% extends 'public/templates/public_template.html' %}
+<!---->
+{% block title %}View and Edit{% endblock title %}
+<!---->
+{%block main%}
+<h1>View and Edit your pantry items</h1>
+{% endblock main%}
+<!---->
+{%block content%}
+<p id="app">{{msg}}</p>
+<div class="table-container ">
+    {% if output_data|length != 0%}
+    <table class="edit-table">
+
+        <thead>
+            <tr>
+                <th>Food</th>
+                <th>Stock</th>
+                <th>Code</th>
+                <th>New Amount</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!---->
+            {% for row in output_data %}
+            <tr>
+                <td>{{row.name}}</td>
+                <td>{{row.count}}</td>
+                <td>{{row.code}}</td>
+
+                <td>
+                    <input id="new_count" class="input_amount" name="new_count" type="text" />
+                </td>
+                <td>
+                    <button id="code" class="edit_buttons" onclick="edit_food();" name="code" type="submit" value="{{row.code}}"> Change
+                    </button>
+                </td>
+
+                <td>
+                    <button id="code" class="edit_buttons" onclick="delete_food();" name="code" type="submit" value="{{row.code}}"> Delete
+                    </button>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+    {%else%}
+    <div class="row">
+        <div>
+            <h2 class='no-items-message'>No items in pantry</h2>
+        </div>
+        <div>
+            <form action="/add" method="GET">
+                <button type="submit">Add item</button>
+            </form>
+        </div>
+    </div>
+    <!---->
+    {% endif %}
+</div>
+
+<script>
+    function edit_food() {
+        var new_count = document.getElementById("new_count");
+        var code = document.getElementById("code");
+
+        var entry = {
+            code: code.value,
+            new_count: new_count.value
+        }
+
+        fetch(`${window.origin}/edit`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    console.log(`Response status was not 200: ${response.status}`);
+                    document.querySelector('#app').innerHTML = "Something went wrong. Please try again";
+                } else if (response.status === 200) {
+                    alert('Successfully edited');
+                    window.location.reload()
+                        //document.querySelector('#app').innerHTML = "Successfully edited. Please refresh";
+                }
+            })
+    }
+
+    function delete_food() {
+        var code = document.getElementById("code");
+
+        var entry = {
+            code: code.value,
+        }
+
+        fetch(`${window.origin}/delete`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    console.log(`Response status was not 200: ${response.status}`);
+                    document.querySelector('#app').innerHTML = "Something went wrong. Please try again";
+                } else if (response.status === 200) {
+                    alert('Successfully deleted');
+                    window.location.reload()
+                        //document.querySelector('#app').innerHTML = "Successfully deleted. Please refresh";
+                }
+            })
+    }
+</script>
+{%endblock content%}

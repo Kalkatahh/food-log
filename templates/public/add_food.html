@@ -1,0 +1,62 @@
+{% extends 'public/templates/public_template.html' %}
+<!---->
+{% block title %}Add to your pantry{% endblock title %}
+<!---->
+{%block main%}
+<h1>Add some food {{my_name}}</h1>
+{% endblock main%}
+<!---->
+{%block content%}
+<p id="app">{{msg}}</p>
+<div class="form-group ">
+    <input id="code" name="code" placeholder="Barcode of item" type="text " />
+</div>
+
+<div class="form-group ">
+    <input id="name" name="name" placeholder="Name of item" type="text " />
+</div>
+
+<div class="form-group ">
+    <input id="count" name="count" placeholder="Amount of item to add" type="text " />
+</div>
+<button class="btn btn-primary" onclick="submit_food(); ">Add Item</button>
+</div>
+<div>
+    <form action="/edit" method="GET">
+        <button class="btn btn-primary" type="submit">View and Edit items</button>
+    </form>
+</div>
+<script>
+    function submit_food() {
+        var count = document.getElementById("count");
+        var name = document.getElementById("name");
+        var code = document.getElementById("code");
+
+        var entry = {
+            code: code.value,
+            name: name.value,
+            count: count.value
+        }
+
+
+        fetch(`${window.origin}/add`, {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function(response) {
+                if (response.status !== 200) {
+                    console.log(`Response status was not 200: ${response.status}`);
+                    document.querySelector('#app').innerHTML = "Something went wrong. Please try again";
+                } else if (response.status === 200) {
+                    document.querySelector('#app').innerHTML = "Successfully added.";
+                }
+            })
+    }
+</script>
+
+{%endblock content%}
