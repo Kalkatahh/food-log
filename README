@@ -3,8 +3,6 @@
 To run:
 python3 -m flask run
 
-Integrate opencv from old-tkinter.py into the add food portion of the code
-
 --------------------------------------------------------------------------------
 
 To Use:  
@@ -21,3 +19,8 @@ Currently only I have access to it via a username and password I manually entere
 
 
 --------------------------------------------------------------------------------
+
+To do:
+
+
+Integrate opencv from old-tkinter.py into the add food portion of the code
