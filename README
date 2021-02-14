@@ -4,3 +4,21 @@ To run:
 python3 -m flask run
 
 Integrate opencv from old-tkinter.py into the add food portion of the code
+
+
+
+#To Use:  
+1, Create your own username and password manually into the Users table
+2, Login into the web app once it’s deployed somewhere, or locally.
+3, Navigate to the ‘Add Food’ page by the navigation bar up top
+4, Enter the food name, amount to add, and barcode. The barcode will act at the primary key when storing in the table
+5, Once successfully entered you can view your food in the ‘View Foods Page’ which you can navigate to via the navigation bar or the button in the ‘Add Food’ page
+6, In the ‘View Foods’ page you can edit existing food amounts. 
+
+
+
+
+
+Link to web app:  sims-pantry.herokuapp.com
+
+Currently only I have access to it via a username and password I manually entered in my table
